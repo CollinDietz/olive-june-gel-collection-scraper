@@ -21,14 +21,14 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🏃 Run scraper
-        run: |
-          node index.js
-          tar -czf assets.tar.gz ./assets
-
       - name: 🗓️ Generate current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
+      - name: 🏃 Run scraper
+        run: |
+          node index.js
+          tar -czf olive-and-june-gel-${{ steps.date.outputs.date }}.tar.gz ./assets
 
       - name: 📦 Upload to GitHub Release
         uses: softprops/action-gh-release@v1
@@ -38,6 +38,6 @@ jobs:
           body: |
             Automated asset scrape of https://oliveandjune.com/collections/gel-polish
             Scraped on: ${{ steps.date.outputs.date }}
-          files: assets.tar.gz
+          files: olive-and-june-gel-${{ steps.date.outputs.date }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
