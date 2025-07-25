@@ -24,12 +24,18 @@ jobs:
       - name: 🏃 Run scraper
         run: node index.js
 
-      - name: 🔼 Upload to GitHub Release
+      - name: 🗓️ Generate current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
+      - name: 📦 Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: olive-and-june-gel-collection-{{date}}
-          name: Olive And June Gel Collection – {{date}}
-          body: "Automated asset scrape of https://oliveandjune.com/collections/gel-polish for {{date}}."
+          tag_name: olive-and-june-gel-collection-${{ steps.date.outputs.date }}
+          name: Olive And June Gel Collection – ${{ steps.date.outputs.date }}
+          body: |
+            Automated asset scrape of https://oliveandjune.com/collections/gel-polish
+            Scraped on: ${{ steps.date.outputs.date }}
           files: assets.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
