@@ -22,7 +22,9 @@ jobs:
         run: npm install
 
       - name: 🏃 Run scraper
-        run: node index.js
+        run: |
+          node index.js
+          tar -czf assets.tar.gz ./assets
 
       - name: 🗓️ Generate current date
         id: date

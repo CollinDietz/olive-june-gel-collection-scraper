@@ -2,7 +2,6 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const cheerio = require("cheerio");
-const tar = require("tar");
 
 const BASE_URL = "https://oliveandjune.com";
 const COLLECTION_URL = `${BASE_URL}/collections/gel-polish`;
@@ -242,16 +241,6 @@ async function main() {
     baseDir + "/gel_polishes.json",
     JSON.stringify(updated, null, 2)
   );
-
-  tar
-    .c(
-      {
-        gzip: true,
-        file: "assets.tar.gz",
-      },
-      ["assets"]
-    )
-    .then(() => console.log("💅 assets.tar.gz created"));
 }
 
 main();
