@@ -136,13 +136,13 @@ async function scrape_product_page(productUrl) {
 
     const productId = findProductId($);
     const description = extractDescription($);
-    const carouselSlideImages = extractCarouselImages($, "slide");
+    const images = extractCarouselImages($, "slide");
     // const carouselThumbImages = extractCarouselImages($, "thumb");
 
     return {
       productId,
       description,
-      carouselSlideImages,
+      images,
       // carouselThumbImages,
     };
   } catch (err) {
@@ -215,14 +215,14 @@ async function downloadImagesAndUpdateJson(products) {
       return localPaths;
     };
 
-    const slideImages = await collect(product.carouselSlideImages, "slide");
+    const slideImages = await collect(product.images, "slide");
     // const thumbImages = await collect(product.carouselThumbImages, 'thumb');
     // const mainImageList = await collect([product.image], 'main');
 
     updatedProducts.push({
       ...product,
       // image: mainImageList[0] || product.image,
-      carouselSlideImages: slideImages,
+      images: slideImages,
       // carouselThumbImages: thumbImages,
     });
   }
