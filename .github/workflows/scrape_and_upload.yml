@@ -1,0 +1,35 @@
+name: Scrape and Upload Assets
+
+on:
+  workflow_dispatch: # manual trigger
+#   schedule:
+#     - cron: '0 6 * * 1'  # every Monday at 6am UTC
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v4
+
+      - name: 🧰 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🏃 Run scraper
+        run: node scrape.js
+
+      - name: 🔼 Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: olive-and-june-gel-collection-{{date}}
+          name: Olive And June Gel Collection – {{date}}
+          body: "Automated asset scrape of https://oliveandjune.com/collections/gel-polish for {{date}}."
+          files: assets.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
