@@ -67,7 +67,7 @@ async function scrape_main_page() {
     const products = [];
 
     for (const el of $("li.indiv-gel").toArray()) {
-      await new Promise(resolve => setTimeout(resolve, 3));
+      await new Promise(resolve => setTimeout(resolve, 100));
       const product = await parse_product($, el);
       if (product) products.push(product);
     }
