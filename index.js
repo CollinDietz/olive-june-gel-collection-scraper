@@ -188,19 +188,18 @@ async function downloadImagesAndUpdateJson(products) {
 
   for (const product of products) {
     const slug = slugify(product.name);
-    const productDir = path.join(baseDir, slug);
-    fs.mkdirSync(productDir, { recursive: true });
+    // const productDir = path.join(baseDir, slug);
+    // fs.mkdirSync(productDir, { recursive: true });
 
     const localPathMap = {};
-
     const collect = async (urls, type) => {
       const localPaths = [];
       for (let i = 0; i < urls.length; i++) {
         const url = urls[i];
         const ext = path.extname(url.split("?")[0]) || ".png";
         const fileName = `${slug}_${type}_${i}${ext}`;
-        const outputPath = path.join(productDir, fileName);
-        const localPath = `assets/images/${slug}/${fileName}`;
+        const outputPath = path.join(baseDir, fileName);
+        const localPath = path.join("assets", "images", fileName);
 
         try {
           await downloadImage(url, outputPath);
