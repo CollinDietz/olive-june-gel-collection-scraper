@@ -33,6 +33,7 @@ async function parse_product($, el) {
 
   const isNew = $(el).find('img[src*="NEW.png"]').length > 0;
 
+  const id = $(el).attr("id") || "";
   const color = $(el).attr("data-color") || "";
   const color_kind = $(el).attr("data-colorkind") || "";
   const undertone = $(el).attr("data-colorundertone") || "";
@@ -44,6 +45,7 @@ async function parse_product($, el) {
   console.log(`💅 Parsed ${name}`);
 
   return {
+    id,
     variantId,
     name,
     price,
@@ -76,6 +78,31 @@ async function scrape_main_page() {
     console.error("Error scraping:", err.message);
   }
 }
+
+function extractRelatedCollectionPolishes($) {
+  const polishes = [];
+
+  $('section.swatch-cross-sell a.swatch-link').each((_, el) => {
+    const $el = $(el);
+
+    const href = $el.attr('href') || '';
+    const id = href.split("/").pop();
+    const style = $el.attr('style') || '';
+    const colorMatch = style.match(/background-color:\s*([^;]+)/i);
+    const color = colorMatch ? colorMatch[1].trim() : null;
+
+    // ✅ Skip if no background color (invisible swatch)
+    if (!color || color === '') return;
+
+    polishes.push({
+      id,
+      color,
+    });
+  });
+
+  return polishes;
+}
+
 
 function extractDescription($) {
   const descContainer = $(".product-single__description");
@@ -132,17 +159,23 @@ function findProductId($) {
 async function scrape_product_page(productUrl) {
   try {
     const { data: html } = await axiosInstance.get(productUrl);
+    fs.writeFileSync(
+      path.join(__dirname, "assets", "html", slugify(productUrl) + ".html"),
+      html
+    );
     const $ = cheerio.load(html);
 
     const productId = findProductId($);
     const description = extractDescription($);
     const images = extractCarouselImages($, "slide");
     // const carouselThumbImages = extractCarouselImages($, "thumb");
+    const relatedCollectionPolishes = extractRelatedCollectionPolishes($);
 
     return {
       productId,
       description,
       images,
+      relatedCollectionPolishes
       // carouselThumbImages,
     };
   } catch (err) {
