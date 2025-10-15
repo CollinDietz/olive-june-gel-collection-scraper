@@ -156,6 +156,20 @@ function findProductId($) {
   return null; // not found
 }
 
+function extractFinishType($) {
+  const finishTypeLink = $('a[href="#finish-type"].underline');
+  if (finishTypeLink.length) {
+    return finishTypeLink.text().trim();
+  }
+  return null;
+}
+
+function extractColorDescription($)
+{
+  const colorDesc = $(".colot-desc").text().trim();
+  return colorDesc;
+}
+
 async function scrape_product_page(productUrl) {
   try {
     const { data: html } = await axiosInstance.get(productUrl);
@@ -166,9 +180,13 @@ async function scrape_product_page(productUrl) {
     const images = extractCarouselImages($, "slide");
     // const carouselThumbImages = extractCarouselImages($, "thumb");
     const relatedCollectionPolishes = extractRelatedCollectionPolishes($);
+    const finishType = extractFinishType($);
+    const colorDescription = extractColorDescription($);
 
     return {
       productId,
+      colorDescription,
+      finishType,
       description,
       images,
       relatedCollectionPolishes
