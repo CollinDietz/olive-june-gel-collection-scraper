@@ -159,10 +159,6 @@ function findProductId($) {
 async function scrape_product_page(productUrl) {
   try {
     const { data: html } = await axiosInstance.get(productUrl);
-    fs.writeFileSync(
-      path.join(__dirname, "assets", "html", slugify(productUrl) + ".html"),
-      html
-    );
     const $ = cheerio.load(html);
 
     const productId = findProductId($);
