@@ -335,11 +335,13 @@ async function downloadImagesAndUpdateJson(products) {
     };
 
     const slideImages = await collect(product.images, "slide");
+
     const thumbNailImagePreProcess = await collect(
       [product.thumbNailImage],
       "thumbnail"
     );
-    const thumbNailImage = await removeWhiteBackground(
+
+    await removeWhiteBackground(
       thumbNailImagePreProcess[0],
       thumbNailImagePreProcess[0]
     );
@@ -350,7 +352,7 @@ async function downloadImagesAndUpdateJson(products) {
       ...product,
       // image: mainImageList[0] || product.image,
       images: slideImages,
-      thumbNailImage: thumbNailImage,
+      thumbNailImage: thumbNailImagePreProcess[0],
       // carouselThumbImages: thumbImages,
     });
   }
